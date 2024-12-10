@@ -26,15 +26,25 @@
 
 function main()
 {
+
+        source "/home/eluciani/.bashrc"
+
         # Important variables !
         # $HYPRTHEMES_DIR => is defined in your .bashrc/.zshrc after 
         # setup.sh execution
 
         #= Add themes names here. It must be the same name as 
         #= the theme directory
-        declare -A themes_list=(
-                ["1"]="JapanesePaper"
+        declare -g -A themes_list=(
         )
+
+        local a=1
+        for i in "${HYPRTHEMES_DIR}/themes/"*; do
+                local theme_name=$(basename "${i}")
+                themes_list["${a}"]="${theme_name}"
+                (( a++ ))
+        done
+
 
 
 
@@ -55,7 +65,7 @@ function main()
                         t) opt_t=1 ;;
                         m) opt_m=1 ;;
                         d) opt_d=1 ;;
-                        *) exit 1 ;;
+                        *) usage exit 1 ;;
                 esac
         done
 
@@ -64,6 +74,7 @@ function main()
         # If no option is used
         if [[ "${_opt}" -eq 0 ]]; then
                 printf "This script cannot be used without option.\n"
+                usage
                 exit 1
         fi
 
@@ -84,15 +95,24 @@ function main()
         # If -t is used
         if [[ "${opt_t}" -eq 1 ]]; then
                 # THEME MANAGEMENT
-                printf "a"
+                update_theme "theme" 
         fi
 
         # If -m is used
         if [[ "${opt_m}" -eq 1 ]]; then
-                change_theme_mode
+                # THEME MODE MANAGEMENT
+                update_theme "mode" 
         fi
 
         exit 0
+}
+
+function usage()
+{
+        printf "Usage:\n"
+        printf "  -d       Debug messages\n"
+        printf "  -m       Change theme mode (light/dark)\n"
+        printf "  -t       Change theme\n\n"
 }
 
 function _colors()
@@ -113,38 +133,75 @@ function _colors()
         DB="${R}[DEBUG]${N}"
 }
 
-function change_theme()
+function update_theme()
 {
-        printf "a"
-}
 
-function change_theme_mode()
-{
+        # ${1} should be either "theme" or "mode"
+
         # DEBUG
-        if [[ "${opt_d}" -eq 1 ]]; then
+        if [[ "${1}" == "mode" ]]; then
                 printf "${DB} Changing theme mode...\n"
+        elif [[ "${1}" == "theme" ]]; then
+                printf "${DB} Changing theme...\n"
         fi
+
+        # List available themes
+        for i in "${!themes_list[@]}"; do
+                printf "${i} - ${themes_list[${i}]}\n"
+        done
 
         # Read actual theme
         local current_theme=$(
                 tail -2 "${HOME}/.config/hypr/hyprland_theme.conf" | head -1
         )
-
+        
         # Read theme mode (light or dark)
         local theme_mode=$(tail -1 "${HOME}/.config/hypr/hyprland_theme.conf")
         local next_mode=""
 
-        # Intervert themes
-        [[ "${theme_mode}" == "light" ]] && next_mode="dark"
-        [[ "${theme_mode}" == "dark" ]] && next_mode="light"
+        if [[ "${1}" == "theme" ]]; then
+                local current_key=""
+                local next_key=""
+                local next_theme=""
 
-        local path="${HYPRTHEMES_DIR}/themes/${current_theme}/${next_mode}"
+                # Get the key for actual theme
+                for key in "${!themes_list[@]}"; do
+                        if [[ "${themes_list[${key}]}" == "${current_theme}" ]]; then
+                                current_key="${key}"
+                                break
+                        fi
+                done
+
+                # Total number of themes
+                local max_key=$((${#themes_list[@]}))
+
+                # Reset to first key if it's the end, else, increment
+                if [[ "${current_key}" -eq "${max_key}" ]]; then
+                        next_key=1
+                else
+                        next_key=$((current_key + 1))
+                fi
+
+                next_theme="${themes_list[${next_key}]}"
+                next_mode="${theme_mode}"
+                local path="${HYPRTHEMES_DIR}/themes/${next_theme}/${theme_mode}"
+        elif [[ "${1}" == "mode" ]]; then
+                # Intervert themes
+                [[ "${theme_mode}" == "light" ]] && next_mode="dark"
+                [[ "${theme_mode}" == "dark" ]] && next_mode="light"
+                local path="${HYPRTHEMES_DIR}/themes/${current_theme}/${next_mode}"
+                next_theme="${current_theme}"
+        fi
 
         # DEBUG
         if [[ "${opt_d}" -eq 1 ]]; then
                 printf "${DB} Actual theme: ${current_theme}\n"
                 printf "${DB} Actual mode: ${theme_mode}\n"
-                printf "${DB} Next mode: ${next_mode}\n"
+                if [[ "${1}" == "theme" ]]; then
+                        printf "${DB} Next theme: ${next_theme}\n"
+                elif [[ "${1}" == "mode" ]]; then
+                        printf "${DB} Next mode: ${next_mode}\n"
+                fi
                 printf "${DB} Theme path: ${path}\n"
         fi
 
@@ -177,7 +234,7 @@ function change_theme_mode()
 
         { # Update the file hyprland_theme.conf for future theme changes
                 echo -e "DO NOT EDIT THIS FILE! IT IS USED BY HYPRTHEMES"
-                echo -e "${current_theme}"
+                echo -e "${next_theme}"
                 echo -e "${next_mode}"
         } > "${HOME}/.config/hypr/hyprland_theme.conf"
 

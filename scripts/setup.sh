@@ -216,7 +216,9 @@ function handle_interrupt()
 
 function create_hyprthemes_scripts_dir()
 {
-        mkdir "${HOME}/.config/Hyprthemes_modules/"
+        if [[ ! -d "${HOME}/.config/Hyprthemes_modules/" ]]; then
+                mkdir "${HOME}/.config/Hyprthemes_modules/"
+        fi
 
         cp -rf "./change_theme.sh" "${HOME}/.config/Hyprthemes_modules"
 }
