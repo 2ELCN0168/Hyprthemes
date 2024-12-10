@@ -1,0 +1,11 @@
+* {
+    main-bg:            #eaeaeaff;
+    main-fg:            #424242ff;
+    main-br:            #424242ff;
+    main-ex:            #424242ff;
+    select-bg:          #e0e0e0ff;
+    select-fg:          #404040ff;
+    wallpaper:          "./background.png";
+    separatorcolor:     transparent;
+    border-color:       transparent;
+}
