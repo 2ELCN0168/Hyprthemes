@@ -1,0 +1,192 @@
+{
+        "layer": "top",
+        "modules-center": [
+                "group/group-power",
+                "custom/separator",
+                "custom/mode",
+                "custom/theme",
+                "custom/rofi",
+                "custom/separator",
+                "hyprland/workspaces",
+                "custom/separator",
+                "wlr/taskbar",
+                "custom/separator",
+                "network",
+                "battery",
+                "bluetooth",
+                "clock",
+                "custom/notifications",
+                "privacy"
+        ],
+        "hyprland/window": {
+                "max-length": 50
+        },
+        "custom/logo": {
+                "format": " ",
+                "tooltip": false
+        },
+        "custom/mode": {
+                "format": " ",
+                "tooltip-format": "Change theme mode",
+                "on-click": "~/.config/Hyprthemes_modules/change_theme.sh -m"
+        },
+        "custom/theme": {
+                "format": " ",
+                "tooltip-format": "Change theme",
+                "on-click": "~/.config/Hyprthemes_modules/change_theme.sh -t"
+        },
+        "custom/separator": {
+                "format": "",
+                "tooltip": false
+        },
+        "custom/rofi": {
+                "format": "󰀻 ",
+                "tooltip": false,
+                "on-click": "hyprctl dispatch -- exec rofi -show drun"
+        },
+        "hyprland/workspaces": {
+                "format": "{icon}",
+                "format-icons": {
+                        "1": "",
+                        "2": "",
+                        "3": "",
+                        "4": "",
+                        "5": "",
+                        "6": "",
+                        "7": "",
+                        "8": "",
+                        "9": "",
+                        "10": "",
+                        "active": ""
+                },
+                "persistent-workspaces": {
+                        "*": 5
+                }
+        },
+        "wlr/taskbar": {
+                "all-outputs": true,
+                "format": "{icon}",
+                "icon-size": 14,
+                "on-click": "activate",
+                "tooltip": false,
+                "ignore-list": [
+                        "Alacritty"
+                ]
+        },
+        "network": {
+                "interval": 10,
+                "format-wifi": "{icon}",
+                "format-ethernet": "󰈀 ",
+                "format-disconnected": "󰞃 ",
+                "format-icons": [
+                        "󰢿 ",
+                        "󰢼 ",
+                        "󰢽 ",
+                        "󰢾 "
+                ],
+                "tooltip-format": "{ifname} : {ipaddr}/{cidr}",
+                "tooltip-format-disconnected": "No network",
+                "max-length": 25
+        },
+        "battery": {
+                "format": "{capacity}% {icon}",
+                "format-charging": " {capacity}% {icon}",
+                "interval": 1,
+                "format-icons": [
+                        " ",
+                        " ",
+                        " ",
+                        " ",
+                        " "
+                ],
+                "max-length": 25
+        },
+        "bluetooth": {
+                "format-on": "󰂲",
+                "format-connected": "󰥰 {device_}",
+                "format-connected-battery": "󰥰 {device_alias} {device_battery_percentage}%"
+        },
+        "clock": {
+                "format-alt": "{:%a, %d. %b  %H:%M}",
+                "tooltip": false
+        },
+        "custom/notifications": {
+                // "format": " 󰚽 ",
+                "format": " {} {icon}",
+                "tooltip": false,
+                "format-icons": {
+                        "notification": " <span foreground='red'><sup></sup></span>",
+                        "none": "  ",
+                        "dnd-notification": " <span foreground='red'><sup></sup></span>",
+                        "dnd-none": "  ",
+                        "inhibited-notification": " <span foreground='red'><sup></sup></span>",
+                        "inhibited-none": "  ",
+                        "dnd-inhibited-notification": " <span foreground='red'><sup></sup></span>",
+                        "dnd-inhibited-none": "  "
+                },
+                "return-type": "json",
+                "exec-if": "swaync-client -swb",
+                "exec": "swaync-client -swb",
+                "on-click": "swaync-client -t -sw",
+                "on-click-right": "swaync-client -d -sw",
+                "escape": true
+        },
+        "privacy": {
+                "icon-spacing": 4,
+                "icon-size": 18,
+                "transition-duration": 250,
+                "modules": [
+                        {
+                                "type": "screenshare",
+                                "tooltip": true,
+                                "tooltip-icon-size": 24
+                        },
+                        {
+                                "type": "audio-out",
+                                "tooltip": true,
+                                "tooltip-icon-size": 24
+                        },
+                        {
+                                "type": "audio-in",
+                                "tooltip": true,
+                                "tooltip-icon-size": 24
+                        }
+                ]
+        },
+        "group/group-power": {
+                "orientation": "inherit",
+                "drawer": {
+                        "transition-duration": 500,
+                        "children-class": "not-power",
+                        "transition-left-to-right": true,
+                        "tooltip": false
+                },
+                "modules": [
+                        "custom/logo",
+                        "custom/shut",
+                        "custom/reboot",
+                        "custom/logout",
+                        "custom/lock"
+                ]
+        },
+        "custom/shut": {
+                "format": "⏻ ",
+                "tooltip": "false",
+                "on-click": "systemctl poweroff"
+        },
+        "custom/reboot": {
+                "format": " ",
+                "tooltip": "false",
+                "on-click": "systemctl reboot"
+        },
+        "custom/lock": {
+                "format": "󰌾 ",
+                "tooltip": "false",
+                "on-click": "hyprlock"
+        },
+        "custom/logout": {
+                "format": "󰈆 ",
+                "tooltip": "false",
+                "on-click": "hyprctl dispatch exit"
+        }
+}
