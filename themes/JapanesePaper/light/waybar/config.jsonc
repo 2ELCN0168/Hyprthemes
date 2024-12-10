@@ -36,7 +36,7 @@
         "custom/theme": {
                 "format": "󰔎 ",
                 "tooltip-format": "Change theme mode",
-                "on-click": "bash ~/.config/Hyprthemes_modules/change_theme.sh -m"
+                "on-click": "~/.config/Hyprthemes_modules/change_theme.sh -m"
         },
         "custom/separator": {
                 "format": "",
