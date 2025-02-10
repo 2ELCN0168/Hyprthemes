@@ -1,5 +1,6 @@
 {
-        "layer": "top",
+        "layer": "bottom",
+        "position": "bottom",
         "modules-center": [
                 "group/group-power",
                 "custom/separator",
